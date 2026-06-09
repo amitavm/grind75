@@ -23,13 +23,13 @@ in [Leetcode](https://leetcode.com/), except perhaps the two-sum problem.
 ## Notes
 
 These are some notes based on my learnings from working on the grind75
-problems.  I used Google Gemini 3.5 Flash to critique my solutions, and most of
-these notes are based on those Gemini's feedback and suggestions.
+problems.  I used Google Gemini 3.5 Flash to critique my solutions, and these
+notes are based on Gemini's feedback and suggestions.
 
 ### Two Sum
 
-Problem: [Two Sum](https://leetcode.com/problems/two-sum)
-Solution: [week1/01-two-sum.py](week1/01-two-sum.py)
+- Problem: [Two Sum](https://leetcode.com/problems/two-sum)
+- Solution: [week1/01-two-sum.py](week1/01-two-sum.py)
 
 I got the key idea right: using a dict to record previously seen numbers and
 their indices so that processing each number in `nums`---checking if its
@@ -56,12 +56,16 @@ def twoSum(nums: list[int], target: int) -> tuple[int, int]:
 Gemini suggested using `enumerate` instead, paired with a `for` loop (as seen
 in the solution).  This makes the code more concise as well as idiomatic.
 
-It's not that I wasn't aware of this idiom; just that I had grown used to using
-while loops when doing some array problems.  In some situations, the additional
-flexibility of manual updation comes handy, especially when you may *not* want
-to update the loop counter based on some condition.  But here, that flexibility
-is completely useless, and using the idiomatic for-enumerate pair is definitely
-better.
+In my defence, it's not that I wasn't aware of this idiom.  Just that I was too
+focused on getting an efficient algorithm right, and instinctively used a while
+loop without giving it much thought.[^while-loop]
+
+[^while-loop]: I had grown used to using while loops when iterating over arrays
+    in the context of "DSA problems": in some situations, the additional
+    flexibility of manual updation comes handy, especially when you may *not*
+    want to update the loop counter based on some condition.  But here, that
+    flexibility is of no use, and using the idiomatic for-enumerate pair is
+    definitely better.
 
 During the review stage, I also got into an "over-optimization" diversion and
 ended up introducing a subtle bug because of that.  I thought, "Why do the dict
@@ -85,6 +89,24 @@ if (cidx := seen.get(target - num)) is not None:
 ```
 
 Gemini successfully caught the bug, and correctly explained that the original
-version doesn't actually do double lookups, mostly.  (How come?)  And it also
+solution doesn't actually do double-lookups, mostly.  (How come?)  And it also
 destroys the idiomatic simplicity of the original.  So the solution stands as
-is.
+is!
+
+### Valid Parentheses
+
+- Problem: [Valid Parentheses](https://leetcode.com/problems/two-sum)
+- Solution: [week1/02-valid-parens.py](week1/02-valid-parens.py)
+
+I mostly got the solution right in one go: a linear-time algorithm using a
+stack and a dict.  Except that its runtime percentile was a disappointing
+12.3%!
+
+Again, too much focus on getting the algorithm right made me miss checking for
+the simple early-exit check: if the input string contains an odd number of
+characters, it can't be valid.  Adding that check to the start of the function
+caused its percentile score to shoot up to 100%!
+
+Another bit of miss on my part was, yet again, in idiomatic Python: I wrote
+`len(bstack) == 0` to check for an empty stack, bug Gemini suggested (in line
+with PEP8, mind you) that it's more idiomatic to write `not bstack` instead.

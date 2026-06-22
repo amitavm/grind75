@@ -61,11 +61,13 @@ focused on getting an efficient algorithm right, and instinctively used a while
 loop without giving it much thought.[^while-loop]
 
 [^while-loop]: I had grown used to using while loops when iterating over arrays
-    in the context of "DSA problems": in some situations, the additional
-    flexibility of manual updation comes handy, especially when you may *not*
-    want to update the loop counter based on some condition.  But here, that
-    flexibility is of no use, and using the idiomatic for-enumerate pair is
-    definitely better.
+    in the context of "DSA problems" as a more general-purpose and flexible
+    alternative to the standard and popular for loops.  In some situations, the
+    additional flexibility of manual updation comes handy, especially when you
+    may *not* want to update the loop counter based on some condition, or
+    want to make an "update" that's different from "increment an integer or
+    index".  But here, that flexibility is of no use, and using the idiomatic
+    for-enumerate pair is definitely better.
 
 During the review stage, I also got into an "over-optimization" diversion and
 ended up introducing a subtle bug because of that.  I thought, "Why do the dict

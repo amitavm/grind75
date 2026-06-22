@@ -112,3 +112,27 @@ caused its percentile score to shoot up to 100%!
 Another bit of miss on my part was, yet again, in idiomatic Python: I wrote
 `len(bstack) == 0` to check for an empty stack, bug Gemini suggested (in line
 with PEP8, mind you) that it's more idiomatic to write `not bstack` instead.
+
+### Merge Two Sorted Lists
+
+As I have noted in the source file, this just employs the standard merge
+procedure from the classic merge-sort algorithm in a linked-list context.
+
+The moment I thought of that, I basically went into autopilot and
+(embarassingly) had put in two while loops after the main (merge) loop to copy
+"leftover" nodes (if any).  Gemini gently pointed out that we are now just
+splicing linked lists in place (there is no "copying" happening to extra
+storage space), so we just need a single O(1) assignment to take care of any
+number of leftover nodes.
+
+The other "adjustment" Gemini made was to my mental model, or perspective, of
+what's actually going on.  I remarked that this is a "heavy handed" version of
+the classic merge procedure.  I was mostly thinking from the syntactic and
+conceptual points of view: I felt the need to define a ListNode class and the
+accompanying concept of a singly-linked list, and splicing the links is
+"heavier" than using simple, builtin arrays as in merge-sort.  That may be
+true, but Gemini pointed out that from the runtime perspective, this procedure
+is *less* heavy-handed because it's happening in-place using O(1) space (we are
+just splicing the nodes in contrast to allocating O(n) extra space in
+merge-sort), and (as noted above), "copying" leftover nodes is also a O(1)
+operation.  Matter of perspective, I guess.

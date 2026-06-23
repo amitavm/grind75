@@ -139,3 +139,69 @@ is *less* heavy-handed because it's happening in-place using O(1) space (we are
 just splicing the nodes in contrast to allocating O(n) extra space in
 merge-sort), and (as noted above), "copying" leftover nodes is also a O(1)
 operation.  Matter of perspective, I guess.
+
+### Best Time to Buy and Sell Stock
+
+- Problem: [Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock)
+- Solution: [week1/04-buy-sell-stock.py](week1/04-buy-sell-stock.py)
+
+A brute-force solution for this would be a quadratic-time algorithm, comparing
+each element of the `prices` array with each following (or preceding) element.
+I also remember that CLRS 3rd edition showed a $O(n\log n)$ algorithm for this
+problem (which they called the "maximum subarray problem") to introduce the
+divide-and-conquer algorithm design technique.  (It was not there in the 2nd
+edition, and it was again omitted in the 4th edition.  BTW, I thought that
+approach was a bit too complicated for this problem.)  But a linear-time
+algorithm is possible.
+
+Here's the linear-time solution I came up with initially for this problem:
+
+```python
+def maxProfit(prices: list[int]) -> int:
+    max_profit = 0
+    min_price = prices[0]
+
+    for i in range(1, len(prices)):
+        if prices[i] < min_price:
+            min_price = prices[i]
+            continue
+        profit = prices[i] - min_price
+        if profit > max_profit:
+            max_profit = profit
+
+    return max_profit
+```
+
+Gemini suggested the more idiomatic and concise version that's in the
+checked-in solution.  Points to note:
+
+- I missed checking for an empty input array.  Even though one of the
+  constraints in the Leetcode problem statement guarantees that the array will
+  have at least one element, it's a good practice/habit to always take care of
+  such edge cases.
+
+- My solution was low-level, with all details shown explicitly.  Someone
+  reviewing the code will have to look through it carefully to make sure
+  nothing is amiss or incorrect.  Gemini's solution is much cleaner because
+  it's at a higher level (of abstraction).
+
+  According to Gemini, it almost flows like a human thinking about the problem:
+  "At each step, update the lowest price I've seen, and check if selling today
+  gives me a better profit than before."  It's also more idiomatic Python,
+  elegantly making use of the builtin min() and max() functions.
+
+  (Of course, it's probably not easy for a human programmer to think about this
+  problem that clearly and succinctly from the get-go: for most programmers, it
+  will probably take some time and effort to reach that level of clarity.  So
+  when they see this solution, it may feel like "magic" to them!)
+
+- So can we say that Gemini's solution is better in all situations?  Not
+  necessarily.  (Remember: everything is a trade-off!)
+
+  First, for beginners (to programming), it's useful (and important?) to walk
+  through the lower level details to get a feel for what's really going on.
+
+  Second, if we change the problem requirement a bit to return not just the max
+  profit, but also the indices indicating the buy and sell days, the initial
+  (lower level) solution is easier to adapt.  (I leave that to you, dear
+  reader, as an exercise!)

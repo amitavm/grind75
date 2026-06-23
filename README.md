@@ -115,6 +115,9 @@ with PEP8, mind you) that it's more idiomatic to write `not bstack` instead.
 
 ### Merge Two Sorted Lists
 
+- Problem: [Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists)
+- Solution: [week1/03-merge-2-sorted-lists.py](week1/03-merge-2-sorted-lists.py)
+
 As I have noted in the source file, this just employs the standard merge
 procedure from the classic merge-sort algorithm in a linked-list context.
 

@@ -205,3 +205,46 @@ checked-in solution.  Points to note:
   profit, but also the indices indicating the buy and sell days, the initial
   (lower level) solution is easier to adapt.  (I leave that to you, dear
   reader, as an exercise!)
+
+### Valid Palindrome
+
+- Problem: [Valid Palindrome](https://leetcode.com/problems/valid-palindrome)
+- Solution: [week1/05-valid-palindrome.py](week1/05-valid-palindrome.py)
+
+This algorithm skips the non-alphanumeric characters on the fly.  Other
+approaches could be to do it in two passes, or by creating copies of the
+strings, to get rid of the non-alphanumeric characters, but they would require
+extra computation or storage.  This approach takes $O(1)$ space and its runtime
+is $O(n).$
+
+As usual, Gemini suggested a "better" version:
+
+```python
+def isPalindrome(s: str) -> bool:
+    i, j = 0, len(s) - 1
+
+    while i < j:
+        # Fast-forward the left pointer past non-alphanumeric characters
+        while i < j and not s[i].isalnum():
+            i += 1
+
+        # Fast-forward the right pointer past non-alphanumeric characters
+        while i < j and not s[j].isalnum():
+            j -= 1
+
+        # Check for matching characters case-insensitively
+        if s[i].lower() != s[j].lower():
+            return False
+
+        i += 1
+        j -= 1
+
+    return True
+```
+
+This gets rid of the `continue` keywords and arguably make the code a bit
+cleaner (less cluttered).  The code to skip the whitespace is "greedy": it's
+done in nested while loops, so it will "eat up" all consecutive whitespace in
+"one go".  My version effectively does the same thing, but it's at a lower
+level (of abstraction).  I'm still thinking like a C programmer, and not like a
+Pythonista I guess!

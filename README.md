@@ -273,3 +273,84 @@ will also be identical for both approaches: O(w), where w is the width of the
 tree.  On further questioning, it clarified that that space complexity is valid
 only for the BFS approach; the DFS approach should take O(h) storage, where h
 is height of the tree.)
+
+### Valid Anagram
+
+- Problem: [Valid Palindrome](https://leetcode.com/problems/valid-anagram)
+- Solution: [week1/07-valid-anagram.py](week1/07-valid-anagram.py)
+
+I got the basic approach right: to use dictionaries to store the character
+frequencies in the two strings and then to compare them for equality.  But my
+solution again takes a lower level approach, compared to what's possible in
+Python.  Gemini pointed out that we can directly compare two dictionaries for
+equality:
+
+```python
+def isAnagram(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+
+    # Return the frequencies of characters in string `x`.
+    def charFreq(x: str) -> defaultdict:
+        cf = defaultdict(int)
+        for c in x:
+            cf[c] += 1
+        return cf
+
+    return charFreq(s) == charFreq(t)
+```
+
+To take it a step further, we have `Counter` objects in Python's standard
+library to generate frequency maps of iterables; using that makes the solution
+literally a one-liner in Python (except for the early-exit check):
+
+```python
+from collections import Counter
+
+def isAnagram(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    return Counter(s) == Counter(t)
+```
+
+However, I feel this defeats the spirit of the problem.  The idea is to check
+if a candidate is able to come up with the *basic steps* of the solution by
+himself or herself, rather than relying on standard library features.  It's
+like asking a candidate to write a Python function to find the maximum element
+in a list of numbers (using the linear-search algorithm), and they just use the
+builtin `max()` function to do it!  Yes, it does the exact same thing under the
+hood, but we want to see if they can come up with the basic steps themselves.
+
+Gemini pointed out some variations interviewers sometimes like to ask:
+
+- What if the input string contain unicode chars?  That's not a problem in
+  Python 3, where strings are natively unicode.  In a language that doesn't
+  natively support unicode strings, we need to ensure we process the (unicode)
+  *characters* in the strings rather than the bytes (which would be part of a
+  specific *encoding*).
+- Can we do this using a single dict or array instead of two?  (This is left as
+  an exercise for the reader!)
+- What if there's severe space constraint but we can afford extra CPU cycles?
+  Does the solution change (if at all)?  This is slightly tricky.  If strings
+  could be sorted *in-place*, we could sort and then compare them, taking O(1)
+  space complexity but O(n log(n)) time complexity.  But that won't work in
+  Python in a space-constrained scenario because Python strings are immutable,
+  so sorting them will have O(n) space complexity.
+
+  (This is another place where Gemini tripped-up: it suggested sorting the
+  strings and comparing them as a solution to the space-constrained version of
+  the problem.  When I pointed out the immutability of strings in Python, it
+  admitted the oversight and clarified that that solution will only work in
+  languages like C++ where strings can be sorted in-place.)
+
+Finally, I would like to call out the use of the *nested function* `charFreq()`
+in my solution.  Most people would probably keep it as a global function (or
+worse, inline the same block of code twice instead of putting it in a
+function).  However, I think a nested function is better here from a "code
+organization" point of view: the logic (of generating the character-frequency
+of a string) is something that's likely to be irrelevant to other parts of the
+code, so "encapsulating" it within the `isAnagram()` function (and not
+polluting the global namespace) seems better.  This technique is something I
+picked up from SICP (whatever little I did of it), and I like to use it in
+actual code whenever it makes sense.  (Provided the language supports nested
+functions, of course; sadly, not every language does.)

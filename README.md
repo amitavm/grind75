@@ -248,3 +248,28 @@ done in nested while loops, so it will "eat up" all consecutive whitespace in
 "one go".  My version effectively does the same thing, but it's at a lower
 level (of abstraction).  I'm still thinking like a C programmer, and not like a
 Pythonista I guess!
+
+### Invert Binary Tree
+
+- Problem: [Valid Palindrome](https://leetcode.com/problems/invert-binary-tree)
+- Solution: [week1/06-invert-bintree.py](week1/06-invert-bintree.py)
+
+I first came up with the short and straight-forward recursive solution.  Gemini
+pointed out that interviewers sometimes ask candidates if they can do it using
+iteration instead.  I thought about it and came up with the stack based
+solution shown in the [solution source code](week1/06-invert-bintree.py).
+(More or less; the solution shown there has been slightly modified based on
+Gemini's solution).
+
+Gemini further pointed out that it can also be done using a queue (which I
+didn't think of originally), and that a stack based solution processes the
+nodes in a DFS order, while a queue based solution does the processing in BFS
+order.  The order of processing the nodes will be different in the two
+approaches, but the end result, including the runtime complexity, will be
+identical.
+
+(Gemini did make a subtle technical mistake here, and said the space complexity
+will also be identical for both approaches: O(w), where w is the width of the
+tree.  On further questioning, it clarified that that space complexity is valid
+only for the BFS approach; the DFS approach should take O(h) storage, where h
+is height of the tree.)

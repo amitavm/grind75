@@ -354,3 +354,79 @@ polluting the global namespace) seems better.  This technique is something I
 picked up from SICP (whatever little I did of it), and I like to use it in
 actual code whenever it makes sense.  (Provided the language supports nested
 functions, of course; sadly, not every language does.)
+
+### Binary Search
+
+- Problem: [Binary Search](https://leetcode.com/problems/binary-search)
+- Solution: [week1/08-valid-anagram.py](week1/08-binary-search.py)
+
+This is the classic binary search algorithm you will find in many DSA
+textbooks.  It seems simple when you look at an implementation that works.  But
+apparently it's notorious to trip up even experienced programmers.  So it's a
+good idea to try your hand at it to get some practice.
+
+A few points to note:
+
+- I goofed up in my initial implementation with the division operator (when
+  computing `mid`).  I used `/` first, but that defaults to floating point
+  division in Python 3.  So we need to use `//` for integer division.
+- The expression used to compute `mid` may be surprising to some.  It could
+  also be written more simply as `mid = (lo + hi) / 2`, and that would work
+  just fine in Python.  The former expression, however, is safer when using
+  statically typed languages like C/C++ or Java where integers have fixed
+  sizes, so there's a possibility of the latter expression overflowing when
+  `hi` and `lo` are large integers.  Apparently this "overflow bug" was lurking
+  in Java's standard library for years before someone noticed it.  (For `hi +
+  lo` to overflow a 32-bit integer, the sum must be more than 4 billion, so
+  it's a problem only when you have such large arrays, which is why it went
+  undetected for years in the Java implementation.)  This is not a problem in
+  Python because it supports unlimited precision integer arithmetic.
+- We use a half-open interval for the indices: `lo` is included in the range,
+  but `hi` is excluded.  Thus, notice that we say `hi = mid`, but `lo = mid +
+  1` inside the loop, and `hi = len(nums)` at the start: `hi` is always 1 more
+  than the last valid index to look at.  This also makes it easy to write the
+  condition in the while loop as `lo < hi`, and not `lo <= hi`.  Why do we use
+  an asymmetric, half-open interval?  Because that makes it easy to avoid
+  [off-by-one errors](https://en.wikipedia.org/wiki/Off-by-one_error).
+
+Gemini also pointed out that Python's stdlib comes with a `bisect_left`; it
+returns the (index of the) first occurrence of `target` if it's present in the
+array, otherwise it returns the index where `target` should be inserted to
+maintain sorted order.  (There's also a `bisect_right` that works analogously.)
+
+The default version of these functions are written in C for efficiency, but
+they also have pure Python versions as fallback options.  Here's the Python
+version of `bisect_left`
+
+```python
+def bisect_left(a, x, lo=0, hi=None, *, key=None):
+    if lo < 0:
+        raise ValueError('lo must be non-negative')
+    if hi is None:
+        hi = len(a)
+
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if a[mid] < x:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo
+```
+
+Notice the similarity of this algorithm with [our
+solution](week1/08-binary-search.py).
+
+And here's how the binary search algorithm can be written using it:
+
+```python
+import bisect
+
+def binSearch(nums: list[int], target: int) -> int:
+    idx = bisect.bisect_left(nums, target)
+
+    # Check if target actually exists at the returned insertion index
+    if idx < len(nums) and nums[idx] == target:
+        return idx
+    return -1
+```
